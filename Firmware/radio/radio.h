@@ -271,6 +271,8 @@ extern uint8_t radio_get_transmit_power(void);
 ///
 extern bool radio_receive_in_progress(void);
 
+extern void radio_splat_mode(void);
+
 /// send a MAVLink status report packet
 void MAVLink_report(void);
 

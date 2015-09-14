@@ -501,11 +501,19 @@ void
 tdm_serial_loop(void)
 {
 #ifdef RADIO_SPLAT_TESTING_MODE
-    for (;;) {
-        radio_set_channel(0);
-        radio_transmit(MAX_PACKET_LENGTH, pbuf, 0);
-        //radio_receiver_on();
-    }
+//    for (;;) {
+//        radio_set_channel(0);
+//        radio_transmit(MAX_PACKET_LENGTH, pbuf, 0);
+//        //radio_receiver_on();
+//
+
+//    }
+  
+  radio_splat_mode();
+  
+  for (;;) {
+    
+  }
 #else
   __pdata uint8_t	len;
   __pdata uint16_t tnow, tdelta;
