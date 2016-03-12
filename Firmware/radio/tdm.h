@@ -51,6 +51,9 @@
 // Activity logic on Pin // P2.1 P2.2
 //#define TDM_ACTIVITY_LOGIC
 
+// Time in seconds to reset the node if in sync mode
+#define UNLOCK_RESET_SEC 60
+
 // Hard coded for the inital testing, need to figure out how this could be changed on the fly later down the track
 // Maybe a new command seprate from the AT? Without entering +++ mode? more thought needed
 #define BASE_NODEID 0

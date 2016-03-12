@@ -465,14 +465,25 @@ link_update(void)
 #endif // TDM_SYNC_LOGIC
 	}
 	
-	if (unlock_count % 5 == 4) {
+  // Go into sync mode if we have dropped out
+	if (unlock_count > 3) {
 		if(sync_any) {
-			fhop_window_change(); // Try our luck on another channel
+      if(unlock_count % 5 == 4) {
+        fhop_window_change(); // Try our luck on another channel
+      }
 		}
 		else {
 			fhop_set_locked(false); // Set channel back to sync and try again
 			radio_set_channel(fhop_sync_channel());
 		}
+    
+#ifdef UNLOCK_RESET_SEC
+    // Everything is broken :(
+    if (unlock_count > UNLOCK_RESET_SEC) {
+      // Reset the device using sofware reset
+      RSTSRC |= 0x10;
+    }
+#endif // UNLOCK_RESET_SEC
 	}
 
 	statistics_transmit_stats = 0;

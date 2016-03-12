@@ -71,8 +71,8 @@ __code const struct parameter_info {
   {"RTSCTS",			0},
   {"NODEID",			1}, // The base node is '1' lets make new nodes 2
   {"NODEDESTINATION",	65535},
-  {"SYNCANY",			0}, // The amount of nodes in the network, this may could become auto discovery later.
-  {"NODECOUNT",		2}, // The amount of nodes in the network, this may could become auto discovery later.
+  {"SYNCANY",			0}, // The amount of nodes in the network, this could become auto discovery later.
+  {"NODECOUNT",		2}, // The amount of nodes in the network, this could become auto discovery later.
 #ifdef INCLUDE_AES
   {"ENCRYPTION_LEVEL", 0}, // no Enycryption (0), 128 or 256 bit key
 #endif
