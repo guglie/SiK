@@ -489,6 +489,7 @@ tdm_serial_loop(void)
 {
 	__pdata uint16_t last_t = timer2_tick();
 	__pdata uint16_t last_link_update = last_t;
+	__pdata uint8_t last_rxchan;
 
 	_canary = 42;
 
@@ -527,7 +528,7 @@ tdm_serial_loop(void)
 		}
 
 		// set right receive channel
-		radio_set_channel(fhop_receive_channel());
+		radio_set_channel(last_rxchan=fhop_receive_channel());
 
 		// get the time before we check for a packet coming in
 		tnow = timer2_tick();
@@ -737,6 +738,11 @@ tdm_serial_loop(void)
 			trailer.window = (uint16_t)(tdm_state_remaining - flight_time_estimate(len+sizeof(trailer)));
 		}
 
+		if(last_rxchan != fhop_transmit_channel())																	// bug with not locking int time when rx != tx chan
+		{
+			tnow = timer2_tick();
+			while((uint16_t)(timer2_tick() - tnow) < 5U);															// wait 60 uS for PLL to lock after channel change
+		}
 		// set right transmit channel
 		radio_set_channel(fhop_transmit_channel());
 
