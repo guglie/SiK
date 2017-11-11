@@ -100,19 +100,7 @@ static void swap_bytes(__pdata uint8_t ofs, __pdata uint8_t len) __nonbanked
 	}
 }
 
-/// send a MAVLink status report packet
-void MAVLink_report(void)
-{
-	__pdata uint8_t nodeCount = (uint8_t)param_get(PARAM_NODECOUNT);
-	__pdata uint8_t i;
-	for(i=0; i<(nodeCount-1) && i<MAX_NODE_RSSI_STATS; i++)
-	{
-		MAVLink_report_byID(i);
-	}
-}
-
-
-void MAVLink_report_byID(uint16_t nodeid) {
+void MAVLink_report_byID(uint8_t nodeid) {
 	
 	struct mavlink_RADIO_v10 *m = (struct mavlink_RADIO_v10 *)&pbuf[6];
 	pbuf[0] = MAVLINK10_STX;
@@ -150,3 +138,15 @@ void MAVLink_report_byID(uint16_t nodeid) {
 
 	serial_write_buf(pbuf, sizeof(struct mavlink_RADIO_v10)+8);*/
 }
+
+/// send a MAVLink status report packet
+void MAVLink_report(void)
+{
+	__pdata uint8_t nodeCount = (uint8_t)param_get(PARAM_NODECOUNT);
+	__pdata uint8_t i;
+	for(i=0; i<(nodeCount-1) && i<MAX_NODE_RSSI_STATS; i++)
+	{
+		MAVLink_report_byID(i);
+	}
+}
+
