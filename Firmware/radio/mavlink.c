@@ -1,6 +1,6 @@
 // -*- Mode: C; c-basic-offset: 8; -*-
 //
-// Copyright (c) 2012 Andrew Tridgell, All Rights Reserved
+// Copyright (c) 2012 Andrew Tridgell, Guglielmo Cassinelli, All Rights Reserved
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions
@@ -103,21 +103,32 @@ static void swap_bytes(__pdata uint8_t ofs, __pdata uint8_t len) __nonbanked
 /// send a MAVLink status report packet
 void MAVLink_report(void)
 {
+	__pdata uint8_t nodeCount = (uint8_t)param_get(PARAM_NODECOUNT);
+	__pdata uint8_t i;
+	for(i=0; i<(nodeCount-1) && i<MAX_NODE_RSSI_STATS; i++)
+	{
+		MAVLink_report_byID(i);
+	}
+}
+
+
+void MAVLink_report_byID(uint16_t nodeid) {
+	
 	struct mavlink_RADIO_v10 *m = (struct mavlink_RADIO_v10 *)&pbuf[6];
 	pbuf[0] = MAVLINK10_STX;
 	pbuf[1] = sizeof(struct mavlink_RADIO_v10);
 	pbuf[2] = seqnum++;
 	pbuf[3] = RADIO_SOURCE_SYSTEM;
-	pbuf[4] = RADIO_SOURCE_COMPONENT;
+	pbuf[4] = nodeid;//RADIO_SOURCE_COMPONENT;
 	pbuf[5] = MAVLINK_MSG_ID_RADIO;
 
 	m->rxerrors	= errors.rx_errors;
 	m->fixed	= errors.corrected_packets;
 	m->txbuf	= serial_read_space();
-//	m->rssi		= statistics.average_rssi;
-//	m->remrssi	= remote_statistics.average_rssi;
-//	m->noise	= statistics.average_noise;
-//	m->remnoise	= remote_statistics.average_noise;
+	m->rssi		= statistics[nodeid].average_rssi;
+	m->remrssi	= remote_statistics[nodeid].average_rssi;
+	m->noise	= statistics[nodeid].average_noise;
+	m->remnoise	= remote_statistics[nodeid].average_noise;
 	mavlink_crc(MAVLINK_RADIO_CRC_EXTRA);
 
 	if (serial_write_space() < sizeof(struct mavlink_RADIO_v10)+8) {
@@ -127,6 +138,7 @@ void MAVLink_report(void)
 
 	serial_write_buf(pbuf, sizeof(struct mavlink_RADIO_v10)+8);
 
+	/*
 	// now the new RADIO_STATUS common message
 	pbuf[5] = MAVLINK_MSG_ID_RADIO_STATUS;
 	mavlink_crc(MAVLINK_RADIO_STATUS_CRC_EXTRA);
@@ -136,5 +148,5 @@ void MAVLink_report(void)
 		return;
 	}
 
-	serial_write_buf(pbuf, sizeof(struct mavlink_RADIO_v10)+8);
+	serial_write_buf(pbuf, sizeof(struct mavlink_RADIO_v10)+8);*/
 }
