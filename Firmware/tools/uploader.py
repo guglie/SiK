@@ -328,7 +328,7 @@ class uploader(object):
         '''Get into AT Command mode'''
         print("Trying autosync")
         if self.atbaudrate != 115200:
-            self.port.setBaudrate(self.atbaudrate)
+            self.baudrate = self.atbaudrate
         self.send('\r\n')
         time.sleep(1.0)
         self.send('+++')
@@ -352,11 +352,11 @@ class uploader(object):
             time.sleep(0.7)
             self.port.flushInput()
             if self.atbaudrate != 115200:
-                self.port.setBaudrate(115200)
+                self.port.baudrate = 115200
             print("Sent update command")
             return True
         if self.atbaudrate != 115200:
-          self.port.setBaudrate(115200)
+          self.port.baudrate = 115200
         return False
     
     # verify whether the bootloader is present and responding
